@@ -32,7 +32,7 @@ Or, without Docker:
 $ sudo apt install rrdtool && sudo pip3 install requests python-dateutil speedtest-cli
 $ mkdir data # for the rrd file and graph.png
 $ vi settings.ini
-$ ./measure.py
+$ /measure.py
 ```
 
 
@@ -64,6 +64,10 @@ allows you to change the settings without re-building the container.
 |------------------------------|-------------|--------------------------------------------------------------------|
 | `general`                    | `log_level` | Choose `debug` or `info`                                           |
 |                              | `measure`   | Set to `false` if you want to skip measuring (for debugging)       |
+| 			       | `periodical`| Set to `true` if you want to schedule a cron job                   |
+| `schedule`		       | `minutes`   | Cron like syntax. Use `*` for every minute, or `0` - `59`          |
+| 			       | `hour`      | Cron like syntax. Use `*` for every hour, or `0` - `23`            |
+|			       | `dayOfMonth`| Cron like syntax. Use `*` for every day, or `1` - `31`             |
 | `graph`                      | `width`     | total width of the graph                                           |
 |                              | `height`    | height of one graph, i.e. total height = 3x `height`               |
 | `graph_upload`               | `enable`    | Enable uploading `graph.png` via webdav                            |

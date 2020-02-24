@@ -1,5 +1,9 @@
 FROM python:3.8-buster
 WORKDIR /
-RUN mkdir /data && apt-get update -q && apt-get install -y rrdtool && pip3 install requests speedtest-cli python-dateutil Pillow && fc-cache && apt-get clean
+RUN apt-get update -q 
+RUN apt-get install -y rrdtool cron && apt-get clean && fc-cache
+RUN pip3 install requests speedtest-cli python-dateutil Pillow python-crontab
+RUN mkdir data
+COPY startup.sh /startup.sh
 COPY measure.py /measure.py
-CMD python3 ./measure.py
+CMD /bin/bash ./startup.sh

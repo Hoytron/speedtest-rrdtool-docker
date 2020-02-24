@@ -15,6 +15,7 @@ import logging
 import os
 import subprocess
 import tempfile
+from crontab import CronTab
 
 from dateutil import tz
 from PIL import Image
@@ -134,11 +135,30 @@ def upload(fname):
     )
     return http_request.status_code
 
+def create_cron():
+    '''create or edit cronjob'''
+
+    minutes = SETTINGS['schedule']['minutes']
+    hours = SETTINGS['schedule']['hours']
+    dom = SETTINGS['schedule']['dayOfMonth']
+
+    cron = CronTab( user='root')
+    jobs = cron.find_comment('speedtest - do not edit')
+    try:
+        job = next(jobs)
+        job.clear()
+    except StopIteration:
+        job  = cron.new(command=CRON_COMMAND, comment='speedtest - do not edit')
+    
+    if minutes != '*': job.every(minutes).minutes()
+    if hours != '*': job.every(hours).hours()
+    if dom != '*': job.every(dom).dom()
+    cron.write()
 
 def load_settings(settings_fname='settings.ini'):
     '''load config settings from ini file'''
     ini_file = configparser.ConfigParser()
-    ini_file.read('settings.ini')
+    ini_file.read('/settings.ini')
 
     # dependencies
     # uploading needs upload settings
@@ -149,8 +169,9 @@ def load_settings(settings_fname='settings.ini'):
     return ini_file
 
 SETTINGS = load_settings()
-RRD_FNAME = './data/speed.rrd'
-GRAPH_FNAME = './data/graph.png'
+RRD_FNAME = '/data/speed.rrd'
+GRAPH_FNAME = '/data/graph.png'
+CRON_COMMAND = '/usr/local/bin/python3 /measure.py > /proc/1/fd/1 2>/proc/1/fd/2'
 
 def main():
     '''when started from cli'''
@@ -172,6 +193,10 @@ def main():
             "RRD file %s present, continuing",
             RRD_FNAME
         )
+
+    if SETTINGS.getboolean('general', 'periodical'):
+        main_logger.debug('Deploying cron job')
+        create_cron()
 
     if SETTINGS.getboolean('general', 'measure'):
         main_logger.debug('Starting speedtest')

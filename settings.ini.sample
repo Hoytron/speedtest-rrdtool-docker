@@ -1,6 +1,12 @@
 [general]
 log_level=info
 measure=false
+periodical=true
+
+[schedule]
+minutes = *
+hours = 1
+dayOfMonth = *
 
 [graph]
 width=600
