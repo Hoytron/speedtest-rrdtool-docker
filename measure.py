@@ -150,9 +150,9 @@ def create_cron():
     except StopIteration:
         job  = cron.new(command=CRON_COMMAND, comment='speedtest - do not edit')
     
-    if minutes != '*': job.every(minutes).minutes()
-    if hours != '*': job.every(hours).hours()
-    if dom != '*': job.every(dom).dom()
+    if minutes != '*': job.every(int(minutes)).minutes()
+    if hours != '*': job.every(int(hours)).hours()
+    if dom != '*': job.every(int(dom)).dom()
     cron.write()
 
 def load_settings(settings_fname='settings.ini'):

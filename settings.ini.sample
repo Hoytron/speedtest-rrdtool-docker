@@ -1,7 +1,7 @@
 [general]
-log_level=info
-measure=false
-periodical=true
+log_level = info
+measure = true
+periodical = true
 
 [schedule]
 minutes = *
@@ -9,14 +9,20 @@ hours = 1
 dayOfMonth = *
 
 [graph]
-width=600
-height=200
+width = 600
+height = 200
 
 [graph_upload]
-enable=false
-url=
-user=
-password=
+enable = true
+url =
+user =
+password =
+
+[server]
+enable = true
+port = 80
+# use 'plotly' or 'rrd-tool'
+default = plotly
 
 [download]
 min = 600
@@ -29,6 +35,6 @@ max = 50
 color = CC0033
 
 [ping]
-min = 30
+min = 20
 max = 200
 color = 0033CC

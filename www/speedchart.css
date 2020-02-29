@@ -1,0 +1,46 @@
+body {
+	background-color: #141526;
+}
+
+.flex-container {
+	flex-direction: column;
+	display: -webkit-box;
+	display: -moz-box;
+	display: -ms-flexbox;
+	display: -webkit-flex;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.row {
+	flex-direction: row;
+	width: auto;
+	text-align: center;
+	margin: 10px 0px 0px 0px;
+}
+
+.flex-item {
+	color: white;
+	padding-top: 20px;
+}
+
+.headline {
+	display: inline;
+	vertical-align: middle;
+}
+
+h1 {
+	font-family: "Gotham", Medium, sans-serif;
+	font-size: 21pt;
+	color: white;
+}
+
+.svg-icon-speedtest-logo {
+	fill: white;
+	margin: 0px 5px 0px 5px;
+}
+
+.has-error {
+	color: darkred;
+}
