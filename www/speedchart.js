@@ -8,7 +8,7 @@ const black = '#000000';
 const grey = '#809193A8'; // with 50% opacity -> #80******
 const transparent = '#FF******';
 
-function json_merge(j1, j2){
+function jsonMerge(j1, j2){
 	var result = {};
 	Object.keys(j1)
 	  .forEach(key => result[key] = j1[key]);
@@ -22,11 +22,20 @@ function plot(div, xData, yData, xMax, minimum, trace_layout){
 	titleText = div.getAttribute("title");
 	unit = ' ' + div.getAttribute("unit");
 	
+	//animation
+	var frames = [];
+	var n = xData.length;
+	for (var i = 0; i < n; i++) {
+		frames[i] = {data: [{x: [], y: []}]}
+		frames[i].data[0].x = xData.slice(0, i+1);
+		frames[i].data[0].y = yData.slice(0, i+1);
+	}
+	
 	var trace = {
-		x: xData,
-		y: yData,
+		x: frames[1].data[0].x,
+		y: frames[1].data[0].y,
 		name: titleText,
-		mode: 'lines',
+		mode: 'lines+markers',
 		connectgaps: false,
 		type: 'scatter',
 	};
@@ -34,7 +43,7 @@ function plot(div, xData, yData, xMax, minimum, trace_layout){
 	var minimum_trace = {
 		x: [xData[0], xData[xData.length-1]],
 		y: [minimum, minimum],
-		name: 'minimum',
+		name: 'threshold',
 		mode: 'lines',
 		type: 'scatter',
 		line: {color: red}
@@ -63,6 +72,7 @@ function plot(div, xData, yData, xMax, minimum, trace_layout){
 			borderwidth: 0.5
 		},
 		xaxis: {
+			type: 'date',
 			showline: true,
 			showgrid: false,
 			showticklabels: true,
@@ -108,13 +118,25 @@ function plot(div, xData, yData, xMax, minimum, trace_layout){
 		plot_bgcolor: darknavy,
 	}
 	
+	animation = {
+      transition: {
+        duration: 0
+      },
+      frame: {
+        duration: 40,
+        redraw: false
+      }
+	}
+	
 	var configuration = {
-		displayModeBar: false
+		displayModeBar: true
 	};
 	
-	var trace = json_merge(trace, trace_layout);
+	var trace = jsonMerge(trace, trace_layout);
 	
-	Plotly.newPlot( div, [trace, minimum_trace], default_layout, configuration);
+	Plotly.newPlot( div, [trace, minimum_trace], default_layout, configuration).then(function(){
+		Plotly.animate(div, frames, animation);
+	});
 }
 
 function draw(jsonData){
