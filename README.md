@@ -5,6 +5,10 @@ record its results in a `rrdtool` database for record keeping and graphing.
 
 Optionally results may be upload using `HTTP PUT` (WebDAV)
 
+## Demo
+
+![Speedchart results demo](demo/demo.gif)
+
 ## Version
 
 This is in alpha development without any versioning whatsoever. Since it's
