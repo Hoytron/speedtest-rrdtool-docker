@@ -6,7 +6,7 @@ import http.server
 import socketserver
 import sys
 import os
-import json 
+import json
 import rrdtool
 
 # class to handle http requests and define routes
@@ -31,7 +31,7 @@ class SpeedchartHttpRequestHandler(http.server.SimpleHTTPRequestHandler):
     def end_headers(self):
         self.send_my_headers()
         http.server.SimpleHTTPRequestHandler.end_headers(self)
-        
+
     def send_my_headers(self):
         self.send_header("Cache-Control", "no-cache, no-store, must-revalidate")
         self.send_header("Pragma", "no-cache")
@@ -56,7 +56,7 @@ def getSettings():
 def prepareDataForPlotly(start, end, step, datasources, rows):
     timestamps = []
 
-    current_time = start 
+    current_time = start
     for r in rows:
         timestamps.append(current_time)
         current_time += step
@@ -71,15 +71,15 @@ def prepareDataForPlotly(start, end, step, datasources, rows):
 def retrieveData():
     try:
         rrd_info = rrdtool.info(RRD_FNAME)
-    
+
         data = rrdtool.fetch(RRD_FNAME, 'MAX')
         start, end, step = data[0]
         ds = data[1]
         rows = data[2]
         json_data = prepareDataForPlotly(start, end, step, ds, rows)
-        
+
         json_data['options'] = getSettings();
-        
+
         f = open("data.json", "w")
         f.write( json.dumps(json_data) )
         f.close()
@@ -91,7 +91,7 @@ def retrieveData():
 def start_server():
     port = int(SETTINGS['server']['port'])
     web_dir = '/www'
-    
+
     os.chdir(web_dir)
     handler = SpeedchartHttpRequestHandler
     handler.default = SETTINGS['server']['default']
@@ -121,13 +121,13 @@ def main():
         format='%(asctime)s %(message)s'
     )
     main_logger = logging.getLogger('speedchart')
-    
+
     if SETTINGS.getboolean('server', 'enable'):
         main_logger.info('starting webserver')
         main_logger.debug('Default to ' + SETTINGS['server']['default'])
         start_server()
-    
+
 
 if __name__ == '__main__':
   main()
-  
+

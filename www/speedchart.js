@@ -1,4 +1,8 @@
+const downloadBlue = '2DD9EC';
 const green = '#6AFFF3';
+const uploadPurple = '825ED4';
+const downloadGreen = '72FFBC';
+const uploadPink = 'FF7AD2';
 const purple = '#BF71FF';
 const blue = '#1CBFFF';
 const red = '#FF3366';
@@ -21,7 +25,7 @@ function jsonMerge(j1, j2){
 function plot(div, xData, yData, xMax, minimum, trace_layout){
 	titleText = div.getAttribute("title");
 	unit = ' ' + div.getAttribute("unit");
-	
+
 	//animation
 	var frames = [];
 	var n = xData.length;
@@ -30,7 +34,7 @@ function plot(div, xData, yData, xMax, minimum, trace_layout){
 		frames[i].data[0].x = xData.slice(0, i+1);
 		frames[i].data[0].y = yData.slice(0, i+1);
 	}
-	
+
 	var trace = {
 		x: frames[1].data[0].x,
 		y: frames[1].data[0].y,
@@ -39,7 +43,7 @@ function plot(div, xData, yData, xMax, minimum, trace_layout){
 		connectgaps: false,
 		type: 'scatter',
 	};
-	
+
 	var minimum_trace = {
 		x: [xData[0], xData[xData.length-1]],
 		y: [minimum, minimum],
@@ -48,7 +52,7 @@ function plot(div, xData, yData, xMax, minimum, trace_layout){
 		type: 'scatter',
 		line: {color: red}
 	}
-	
+
 	var default_layout = {
 		title: {
 			text: titleText.toUpperCase(),
@@ -68,8 +72,6 @@ function plot(div, xData, yData, xMax, minimum, trace_layout){
 			    color: white
 			},
 			bgcolor: transparent,
-			bordercolor: white,
-			borderwidth: 0.5
 		},
 		xaxis: {
 			type: 'date',
@@ -117,7 +119,7 @@ function plot(div, xData, yData, xMax, minimum, trace_layout){
 		paper_bgcolor: darknavy,
 		plot_bgcolor: darknavy,
 	}
-	
+
 	animation = {
       transition: {
         duration: 0
@@ -127,13 +129,14 @@ function plot(div, xData, yData, xMax, minimum, trace_layout){
         redraw: false
       }
 	}
-	
+
 	var configuration = {
-		displayModeBar: true
+		// displayModeBar: true,
+		modeBarButtonsToRemove: ['lasso2d','toggleSpikelines'],
 	};
-	
+
 	var trace = jsonMerge(trace, trace_layout);
-	
+
 	Plotly.newPlot( div, [trace, minimum_trace], default_layout, configuration).then(function(){
 		Plotly.animate(div, frames, animation);
 	});
@@ -142,21 +145,41 @@ function plot(div, xData, yData, xMax, minimum, trace_layout){
 function draw(jsonData){
 	var errorDiv = document.getElementById('error-msg');
 	errorDiv.innerHTML = '';
-	
+
 	DOWNLOAD = document.getElementById('speedchart-download');
 	UPLOAD = document.getElementById('speedchart-upload');
 	PING = document.getElementById('speedchart-ping');
-	
+
 	var download_layout = {
-		line: {color: green},
-		marker:{color: green}
+		line: {
+			shape: 'spline',
+			smoothing: 1.2,
+			color: green,
+		},
+		fill: 'tozeroy',
+		marker:{
+			color: green,
+			size: 4,
+		}
 	};
 	var upload_layout = {
-		line: {color: purple},
-		marker:{color: purple}
+		line: {
+			shape: 'spline',
+			smoothing: 1.2,
+			color: purple,
+		},
+		fill: 'tozeroy',
+		marker:{
+			color: purple,
+			size: 4,
+		}
 	};
 	var ping_layout = {
-		line: {color: blue},
+		line: {
+			shape: 'spline',
+			smoothing: 1.2,
+			color: blue
+		},
 		marker: {color: blue}
 	};
 

@@ -33,7 +33,7 @@ def create_rrd_file():
             'DS:ping:GAUGE:3600:0:{}'.format(SETTINGS['ping']['max']),
             'DS:upload:GAUGE:3600:0:{}'.format(SETTINGS['upload']['max']),
             'DS:download:GAUGE:3600:0:{}'.format(SETTINGS['download']['max']),
-            'RRA:MAX:0.5:2:168'
+            'RRA:MAX:0.5:2:8784'
         ]
     )
 
@@ -149,7 +149,7 @@ def create_cron():
         job.clear()
     except StopIteration:
         job  = cron.new(command=CRON_COMMAND, comment='speedtest - do not edit')
-    
+
     if minutes != '*': job.every(int(minutes)).minutes()
     if hours != '*': job.every(int(hours)).hours()
     if dom != '*': job.every(int(dom)).dom()
@@ -175,7 +175,7 @@ CRON_COMMAND = '/usr/local/bin/python3 /measure.py > /proc/1/fd/1 2>/proc/1/fd/2
 
 def main():
     '''when started from cli'''
- 
+
     logging.basicConfig(
         level=getattr(logging, SETTINGS['general']['log_level'].upper()),
         format='%(asctime)s %(message)s'
