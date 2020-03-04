@@ -25,6 +25,7 @@ function jsonMerge(j1, j2){
 function plot(div, xData, yData, xMax, minimum, trace_layout){
 	titleText = div.getAttribute("title");
 	unit = ' ' + div.getAttribute("unit");
+	mostX = xData[xData.length-1];
 
 	//animation
 	var frames = [];
@@ -45,7 +46,7 @@ function plot(div, xData, yData, xMax, minimum, trace_layout){
 	};
 
 	var minimum_trace = {
-		x: [xData[0], xData[xData.length-1]],
+		x: [xData[0], mostX],
 		y: [minimum, minimum],
 		name: 'threshold',
 		mode: 'lines',
@@ -75,6 +76,7 @@ function plot(div, xData, yData, xMax, minimum, trace_layout){
 		},
 		xaxis: {
 			type: 'date',
+			range: [(new Date).setDate(mostX.getDate() - 7), mostX],
 			showline: true,
 			showgrid: false,
 			showticklabels: true,
