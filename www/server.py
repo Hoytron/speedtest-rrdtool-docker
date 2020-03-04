@@ -54,15 +54,19 @@ def getSettings():
     }
 
 def prepareDataForPlotly(start, end, step, datasources, rows):
-    timestamps = []
-
     current_time = start
-    for r in rows:
-        timestamps.append(current_time)
+    rowsWithTime = []
+    for row in rows:
+        '''if row has at least one value, add time and remember'''
+        if len(list(filter(None, row))) > 0:
+            row = row + (current_time,)
+            rowsWithTime.append(row)
         current_time += step
-    transposition = [[row[i] for row in rows] for i in range(len(rows[0]))]
+    
+    transposition = [[row[i] for row in rowsWithTime] for i in range(len(rowsWithTime[0]))]
 
-    json_data = {"timestamps":timestamps}
+    datasources = datasources + ("timestamps",)
+    json_data = {}
     for i in range(0, len(datasources)):
         json_data[datasources[i]] = transposition[i]
 
@@ -72,13 +76,13 @@ def retrieveData():
     try:
         rrd_info = rrdtool.info(RRD_FNAME)
 
-        data = rrdtool.fetch(RRD_FNAME, 'MAX')
+        data = rrdtool.fetch(RRD_FNAME, 'MAX', '-s -1y')
         start, end, step = data[0]
         ds = data[1]
         rows = data[2]
         json_data = prepareDataForPlotly(start, end, step, ds, rows)
 
-        json_data['options'] = getSettings();
+        json_data['options'] = getSettings()
 
         f = open("data.json", "w")
         f.write( json.dumps(json_data) )
